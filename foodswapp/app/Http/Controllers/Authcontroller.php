@@ -43,4 +43,22 @@ class Authcontroller extends Controller
         $request->session()->regenerateToken(); 
         return to_route('login'); 
     }
+
+
+    public function sendEmail(Request $request,InviteService $inviteService)
+    {
+        $user=User::where('email',$request->email)->first();
+        if ($request->email) { 
+            $inviteService->sendInvites($user); 
+        }
+    }
+
+    public function resetprocess(Request $request)
+    {
+        $user=User::where('email',$request->email)->first();
+        $user->password=$request->password;
+        $user->save();
+        session()->flash('message', 'mot de passe modifié');
+        return view('layouts.login');
+    }
 }
